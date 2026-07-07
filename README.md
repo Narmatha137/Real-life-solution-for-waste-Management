@@ -1,4 +1,4 @@
-# Real Life Solution For Waste Management
+#  CivicBin - Real Life Solution For Waste Management
 
 A citizen-facing web dashboard for ward-level waste management — schedule pickups, report issues, and track tickets. Built as a self-contained demo (no backend required) to show the core user flow before building out a full stack.
 
@@ -13,16 +13,16 @@ Municipal waste management often lacks a direct channel between citizens and col
 
 
 
-**Target users**
+👤**Target users**
 Citizens/residents of a specific ward (demonstrated for Ward 7).
 
-**Core features**
+## ✨ Core features
 - Dashboard with next collection, open tickets, and monthly recycling stats
 - Schedule pickup by waste type (wet / dry / recyclables / bulk) and date
 - Report an issue with auto-generated ticket number
 - Track ticket status (pending → in progress → resolved)
 
-## What it does
+##✅ What it does
 
 - **Dashboard** — next collection at a glance, open ticket count, monthly recycling stat, upcoming pickups, recent tickets.
 - **Schedule pickup** — pick a waste type (wet / dry / recyclables / bulk) and date; it's added to the upcoming list immediately.
@@ -31,13 +31,13 @@ Citizens/residents of a specific ward (demonstrated for Ward 7).
 
 State is held in memory for the session, so it resets on reload. This is intentional for a demo — see [Roadmap](#roadmap) for what a production version would need.
 
-## Tech stack
+##⚒️ Tech stack
 
 Plain HTML, CSS, and JavaScript. No build step, no dependencies, no server. Open `index.html` in a browser and it runs.
 
 This is deliberate for a demo: it's easy to read, easy to fork, and runs anywhere. A production build would move state into a real backend — see below.
 
-## Running locally
+## 💻Running locally
 
 ```bash
 git clone https://github.com/<your-username>/civicbin.git
@@ -47,7 +47,7 @@ open index.html   # or just double-click the file
 
 No install, no `npm install`, nothing to configure.
 
-## Project structure
+##📁 Project structure
 
 ```
 civicbin/
@@ -56,7 +56,7 @@ civicbin/
 └── LICENSE
 ```
 
-## Roadmap
+## 📊Roadmap
 
 Turning this into a real, deployable system:
 
@@ -69,10 +69,10 @@ Turning this into a real, deployable system:
 - **Route optimization** — even a simple version for planning collection vehicle routes.
 - **IoT integration** — smart bin fill-level sensors feeding into the pickup schedule.
 
-## Design notes
+## 🎨Design notes
 
 The ticket-stub styling (perforated edge, punch holes) is a deliberate nod to real municipal receipts and tickets, used for both pickups and complaint tickets to keep the visual language grounded in the subject rather than a generic dashboard look.
 
-## License
+## 📄License
 
 MIT — see [LICENSE](LICENSE).
