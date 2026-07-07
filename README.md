@@ -9,6 +9,7 @@ A citizen-facing web dashboard for ward-level waste management — schedule pick
 Municipal waste management often lacks a direct channel between citizens and collection services — residents don't know exact pickup schedules, and complaints (overflowing bins, missed pickups, illegal dumping) go unreported or untracked. CivicBin gives citizens a simple way to view pickup schedules and report issues with visible ticket tracking.
 
 ## 🚀 Live Demo
+
 **View the Live Demo** :(https://narmatha137.github.io/Real-life-solution-for-waste-Management/)
 
 
@@ -22,7 +23,7 @@ Citizens/residents of a specific ward (demonstrated for Ward 7).
 - Report an issue with auto-generated ticket number
 - Track ticket status (pending → in progress → resolved)
 
-##✅ What it does
+## ✅ What it does
 
 - **Dashboard** — next collection at a glance, open ticket count, monthly recycling stat, upcoming pickups, recent tickets.
 - **Schedule pickup** — pick a waste type (wet / dry / recyclables / bulk) and date; it's added to the upcoming list immediately.
@@ -31,7 +32,7 @@ Citizens/residents of a specific ward (demonstrated for Ward 7).
 
 State is held in memory for the session, so it resets on reload. This is intentional for a demo — see [Roadmap](#roadmap) for what a production version would need.
 
-##⚒️ Tech stack
+## ⚒️ Tech stack
 
 Plain HTML, CSS, and JavaScript. No build step, no dependencies, no server. Open `index.html` in a browser and it runs.
 
@@ -47,7 +48,7 @@ open index.html   # or just double-click the file
 
 No install, no `npm install`, nothing to configure.
 
-##📁 Project structure
+## 📁 Project structure
 
 ```
 civicbin/
