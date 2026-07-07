@@ -2,7 +2,7 @@
 
 A citizen-facing web dashboard for ward-level waste management — schedule pickups, report issues, and track tickets. Built as a self-contained demo (no backend required) to show the core user flow before building out a full stack.
 
-**[View the live demo](#)** *(update this link after enabling GitHub Pages — see below)*
+**[View the live demo](#)** *(https://narmatha137.github.io/Real-life-solution-for-waste-Management/)*
  ## Project Overview
 
 **Problem statement**
