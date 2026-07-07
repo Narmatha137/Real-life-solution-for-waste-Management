@@ -1,4 +1,4 @@
-# CivicBin
+# Real Life Solution For Waste Management
 
 A citizen-facing web dashboard for ward-level waste management — schedule pickups, report issues, and track tickets. Built as a self-contained demo (no backend required) to show the core user flow before building out a full stack.
 
