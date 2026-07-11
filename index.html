@@ -166,6 +166,9 @@
     nav{flex-wrap:wrap;}
   }
 </style>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
 
@@ -300,7 +303,7 @@
   </section>
 
 </main>
-
+<div id="react-stats-root"></div>
 <footer>CivicBin demo — a concept project for ward-level waste management</footer>
 <div class="toast" id="toast"></div>
 
@@ -428,6 +431,19 @@
 
   renderPickups();
   renderTickets();
+</script>
+  <script type="text/babel">
+  function RecyclingBadge() {
+    const [kg, setKg] = React.useState(14);
+    return (
+      <div style={{background:'#DCE8DA', padding:'12px 18px', borderRadius:'10px', fontFamily:'Inter, sans-serif', fontSize:'13px', color:'#1E3722', maxWidth:'1080px', margin:'0 auto 20px'}}>
+        Powered by React — total recycled: <strong>{kg} kg</strong>
+        <button onClick={() => setKg(kg + 1)} style={{marginLeft:'10px', cursor:'pointer'}}>+1 kg</button>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('react-stats-root')).render(<RecyclingBadge />);
 </script>
 
 </body>
