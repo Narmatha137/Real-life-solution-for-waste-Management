@@ -32,7 +32,6 @@
   h1,h2,h3,.disp{font-family:'Archivo',sans-serif;}
   .mono{font-family:'JetBrains Mono',monospace;}
 
-  /* header */
   header{
     display:flex; align-items:center; justify-content:space-between;
     padding:18px 32px; border-bottom:1.5px solid var(--ink);
@@ -59,7 +58,6 @@
   .view{display:none;}
   .view.active{display:block;}
 
-  /* pass / hero ticket */
   .pass{
     background:var(--forest); color:#fff; border-radius:16px; padding:26px 30px;
     display:flex; justify-content:space-between; align-items:center; gap:20px;
@@ -78,7 +76,6 @@
   .pass-stub .num{font-size:22px; font-weight:600;}
   .pass-stub .lbl{font-size:11px; opacity:.75; margin-top:2px;}
 
-  /* stat row */
   .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:32px;}
   .stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
   .stat .lbl{font-size:12px; color:var(--ink-soft);}
@@ -87,7 +84,6 @@
   h2.section{font-size:16px; font-weight:600; margin:0 0 14px;}
   .grid-2{display:grid; grid-template-columns:1.4fr 1fr; gap:24px;}
 
-  /* ticket stub card (signature element) */
   .stub{
     background:var(--card); border:1px solid var(--line); border-radius:10px;
     display:flex; align-items:center; margin-bottom:12px; position:relative;
@@ -123,7 +119,6 @@
   .icon-recycle{background:#DCE3EE; color:#2E4A72;}
   .icon-issue{background:var(--rust-bg); color:var(--rust);}
 
-  /* forms */
   .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px;}
   label{font-size:12.5px; font-weight:500; color:var(--ink-soft); display:block; margin:0 0 6px;}
   .field{margin-bottom:16px;}
@@ -166,9 +161,10 @@
     nav{flex-wrap:wrap;}
   }
 </style>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -192,23 +188,22 @@
 
 <main>
 
-  <!-- DASHBOARD -->
   <section id="dashboard" class="view active">
     <div class="pass">
       <div>
         <p class="pass-eyebrow">Next collection</p>
-        <p class="pass-title" id="pass-title">Wet waste — tomorrow, 7:00 am</p>
+        <p class="pass-title" id="pass-title">No pickups scheduled yet</p>
         <p class="pass-sub">Keep bins out by 6:45 am on Ganapathy street</p>
       </div>
       <div class="pass-stub">
-        <div class="num mono" id="pass-count">01</div>
+        <div class="num mono" id="pass-count">00</div>
         <div class="lbl">pickups this week</div>
       </div>
     </div>
 
     <div class="stats">
-      <div class="stat"><div class="lbl">Open tickets</div><div class="val" id="stat-open">2</div></div>
-      <div class="stat"><div class="lbl">Resolved this month</div><div class="val" id="stat-resolved">5</div></div>
+      <div class="stat"><div class="lbl">Open tickets</div><div class="val" id="stat-open">0</div></div>
+      <div class="stat"><div class="lbl">Resolved this month</div><div class="val" id="stat-resolved">0</div></div>
       <div class="stat"><div class="lbl">Recycled (kg)</div><div class="val">14</div></div>
     </div>
 
@@ -219,7 +214,6 @@
     <div id="dash-ticket-list"></div>
   </section>
 
-  <!-- SCHEDULE -->
   <section id="schedule" class="view">
     <div class="grid-2">
       <div>
@@ -262,7 +256,6 @@
     </div>
   </section>
 
-  <!-- REPORT -->
   <section id="report" class="view">
     <div class="grid-2">
       <div>
@@ -296,7 +289,6 @@
     </div>
   </section>
 
-  <!-- TICKETS -->
   <section id="tickets" class="view">
     <h2 class="section">My tickets</h2>
     <div id="ticket-list"></div>
@@ -308,18 +300,13 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  let ticketSeq = 1043;
+  const supabaseClient = supabase.createClient(
+    'https://jbgeseeequpevubjekfi.supabase.co',
+    'sb_publishable_lyo8Tthbs49qN6MVL_199Q_w6oBJn-h'
+  );
 
-  let pickups = [
-    {type:'wet', icon:'🌿', iconClass:'icon-wet', label:'Wet waste', date:'Tomorrow', time:'7:00 am', status:'Scheduled', tag:'tag-scheduled'},
-    {type:'recycle', icon:'♻', iconClass:'icon-recycle', label:'Recyclables', date:'Thu 9 Jul', time:'7:00 am', status:'Upcoming', tag:'tag-upcoming'},
-    {type:'dry', icon:'🗑', iconClass:'icon-dry', label:'Dry waste', date:'Sat 11 Jul', time:'7:00 am', status:'Upcoming', tag:'tag-upcoming'}
-  ];
-
-  let complaints = [
-    {id:1042, title:'Overflowing bin near park', loc:'Park road', days:2, status:'In progress', tag:'tag-progress'},
-    {id:1038, title:'Missed pickup on Main street', loc:'Main street', days:5, status:'Pending', tag:'tag-pending'}
-  ];
+  let pickups = [];
+  let complaints = [];
 
   const waterTypeMeta = {
     wet:{icon:'🌿', iconClass:'icon-wet', label:'Wet waste'},
@@ -327,6 +314,14 @@
     recycle:{icon:'♻', iconClass:'icon-recycle', label:'Recyclables'},
     bulk:{icon:'📦', iconClass:'icon-issue', label:'Bulk / e-waste'}
   };
+
+  function statusTag(status){
+    if(status === 'Scheduled') return 'tag-scheduled';
+    if(status === 'In progress') return 'tag-progress';
+    if(status === 'Resolved') return 'tag-resolved';
+    if(status === 'Pending') return 'tag-pending';
+    return 'tag-upcoming';
+  }
 
   function showToast(msg){
     const t = document.getElementById('toast');
@@ -339,21 +334,26 @@
     const list = document.getElementById('pickup-list');
     if(pickups.length === 0){
       list.innerHTML = '<div class="empty">No pickups scheduled. Head to "Schedule pickup" to add one.</div>';
-      return;
+    } else {
+      list.innerHTML = pickups.map(p => {
+        const meta = waterTypeMeta[p.waste_type] || waterTypeMeta.wet;
+        return `
+          <div class="stub">
+            <div class="stub-main">
+              <div class="stub-icon ${meta.iconClass}">${meta.icon}</div>
+              <div><p class="stub-title">${p.label}</p><p class="stub-meta">${p.pickup_date}, 7:00 am</p></div>
+            </div>
+            <div class="stub-perf"></div>
+            <div class="stub-tag ${statusTag(p.status)}">${p.status}</div>
+          </div>
+        `;
+      }).join('');
     }
-    list.innerHTML = pickups.map(p => `
-      <div class="stub">
-        <div class="stub-main">
-          <div class="stub-icon ${p.iconClass}">${p.icon}</div>
-          <div><p class="stub-title">${p.label}</p><p class="stub-meta">${p.date}, ${p.time}</p></div>
-        </div>
-        <div class="stub-perf"></div>
-        <div class="stub-tag ${p.tag}">${p.status}</div>
-      </div>
-    `).join('');
     document.getElementById('pass-count').textContent = String(pickups.length).padStart(2,'0');
     if(pickups[0]){
-      document.getElementById('pass-title').textContent = `${pickups[0].label} — ${pickups[0].date.toLowerCase()}, ${pickups[0].time}`;
+      document.getElementById('pass-title').textContent = `${pickups[0].label} — ${pickups[0].pickup_date.toLowerCase()}, 7:00 am`;
+    } else {
+      document.getElementById('pass-title').textContent = 'No pickups scheduled yet';
     }
   }
 
@@ -362,10 +362,10 @@
       <div class="stub">
         <div class="stub-main">
           <div class="stub-icon icon-issue">!</div>
-          <div><p class="stub-title">${c.title}</p><p class="stub-meta">${c.loc} · Reported ${c.days}d ago · #WM-${c.id}</p></div>
+          <div><p class="stub-title">${c.title}</p><p class="stub-meta">${c.location} · #WM-${c.ticket_number}</p></div>
         </div>
         <div class="stub-perf"></div>
-        <div class="stub-tag ${c.tag}">${c.status}</div>
+        <div class="stub-tag ${statusTag(c.status)}">${c.status}</div>
         ${withAction && c.status !== 'Resolved' ? `<div style="padding:0 14px;"><button class="btn btn-ghost btn-sm" onclick="resolveTicket(${c.id})">Mark resolved</button></div>` : ''}
       </div>
     `;
@@ -382,41 +382,62 @@
       dash.innerHTML = complaints.slice(0,2).map(c => ticketRowHtml(c, false)).join('');
     }
     document.getElementById('stat-open').textContent = complaints.filter(c=>c.status!=='Resolved').length;
+    document.getElementById('stat-resolved').textContent = complaints.filter(c=>c.status==='Resolved').length;
   }
 
-  function schedulePickup(){
+  async function loadData(){
+    const { data: pickupData } = await supabaseClient.from('pickups').select('*').order('id');
+    pickups = pickupData || [];
+    renderPickups();
+
+    const { data: complaintData } = await supabaseClient.from('complaints').select('*').order('id', { ascending:false });
+    complaints = complaintData || [];
+    renderTickets();
+  }
+
+  async function schedulePickup(){
     const type = document.getElementById('s-type').value;
     const date = document.getElementById('s-date').value;
     if(!date){ showToast('Pick a date first'); return; }
     const meta = waterTypeMeta[type];
     const d = new Date(date);
     const dateLabel = d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
-    pickups.push({type, icon:meta.icon, iconClass:meta.iconClass, label:meta.label, date:dateLabel, time:'7:00 am', status:'Upcoming', tag:'tag-upcoming'});
-    renderPickups();
+
+    const { error } = await supabaseClient.from('pickups').insert({
+      waste_type: type, label: meta.label, pickup_date: dateLabel, status: 'Upcoming'
+    });
+    if(error){ showToast('Could not save pickup'); console.error(error); return; }
+
+    await loadData();
     document.getElementById('s-date').value = '';
     showToast(`${meta.label} pickup scheduled for ${dateLabel}`);
     switchView('dashboard');
   }
 
-  function submitComplaint(){
+  async function submitComplaint(){
     const cat = document.getElementById('r-cat').value;
     const loc = document.getElementById('r-loc').value.trim();
     const desc = document.getElementById('r-desc').value.trim();
     if(!loc || !desc){ showToast('Add a location and description'); return; }
-    ticketSeq += 1;
-    complaints.unshift({id:ticketSeq, title:`${cat} — ${loc}`, loc, days:0, status:'Pending', tag:'tag-pending'});
-    renderTickets();
+
+    const ticketNumber = 1043 + complaints.length + 1;
+    const { error } = await supabaseClient.from('complaints').insert({
+      ticket_number: ticketNumber, title: `${cat} — ${loc}`, location: loc, status: 'Pending'
+    });
+    if(error){ showToast('Could not submit ticket'); console.error(error); return; }
+
+    await loadData();
     document.getElementById('r-loc').value = '';
     document.getElementById('r-desc').value = '';
-    showToast(`Ticket #WM-${ticketSeq} submitted`);
+    showToast(`Ticket #WM-${ticketNumber} submitted`);
     switchView('tickets');
   }
 
-  function resolveTicket(id){
-    const c = complaints.find(c => c.id === id);
-    if(c){ c.status = 'Resolved'; c.tag = 'tag-resolved'; }
-    renderTickets();
-    showToast(`Ticket #WM-${id} marked resolved`);
+  async function resolveTicket(id){
+    const { error } = await supabaseClient.from('complaints').update({ status:'Resolved' }).eq('id', id);
+    if(error){ showToast('Could not update ticket'); console.error(error); return; }
+    await loadData();
+    showToast('Ticket marked resolved');
   }
 
   function switchView(name){
@@ -429,10 +450,10 @@
     btn.addEventListener('click', () => switchView(btn.dataset.view));
   });
 
-  renderPickups();
-  renderTickets();
+  loadData();
 </script>
-  <script type="text/babel">
+
+<script type="text/babel">
   function RecyclingBadge() {
     const [kg, setKg] = React.useState(14);
     return (
